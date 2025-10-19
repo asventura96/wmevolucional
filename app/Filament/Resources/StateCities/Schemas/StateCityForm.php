@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\StateCities\Schemas;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -13,7 +14,8 @@ class StateCityForm
     {
         return $schema
             ->components([
-                TextInput::make('state_id')
+                Select::make('state_id')
+                    ->relationship('state', 'name')
                     ->required()
                     ->numeric(),
                 TextInput::make('name')
