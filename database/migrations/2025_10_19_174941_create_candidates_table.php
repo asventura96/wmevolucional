@@ -20,7 +20,7 @@ return new class extends Migration
             // Chaves Estrangeiras (Lookups)
             $table->foreignId('zodiac_sign_id')->constrained('zodiac_signs'); //
             $table->foreignId('religion_id')->nullable()->constrained('religions'); //
-            $table->foreignId('marital_status_id')->nullable()->constrained('marital_status'); //
+            $table->foreignId('marital_status_id')->nullable()->constrained('marital_statuses'); //
             $table->foreignId('birthplace_id')->nullable()->constrained('state_cities'); //
 
             // Pai
