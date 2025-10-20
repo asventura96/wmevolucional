@@ -1,0 +1,32 @@
+/* public/css/form.css */
+
+/* O contêiner do formulário */
+.form-container {
+    max-width: 800px; 
+    margin: 0 auto; 
+    padding: 1.5rem; 
+    background-color: #fff; 
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Cada grupo de label + input */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+/* Estilização da Label */
+.form-label {
+    display: block; 
+    margin-bottom: 0.5rem; 
+    font-weight: bold;
+}
+
+/* Estilização dos inputs e selects */
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

@@ -1,0 +1,10 @@
+/* public/css/main.css */
+body { 
+    font-family: sans-serif; 
+    margin: 2rem; 
+    background-color: #f4f4f4; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #333; 
+}

@@ -1,0 +1,19 @@
+/* public/css/buttons.css */
+.btn {
+    padding: 0.75rem 1.5rem;
+    color: white; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
