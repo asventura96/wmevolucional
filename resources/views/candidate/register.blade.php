@@ -4,11 +4,28 @@
 
 @section('content')
 
-    <form class="form-container" action="#" method="POST">
+    <form class="form-container" action="{{ route('candidate.register.store') }}" method="POST">
 
         @csrf
 
         <h1>Formulário de Credenciamento</h1>
+
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <strong>Opa!</strong> Algo deu errado:
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <h2>Dados Pessoais</h2>
 
