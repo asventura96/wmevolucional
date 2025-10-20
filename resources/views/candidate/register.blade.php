@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Credenciamento</title>
+@extends('layouts.app')
 
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/forms.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/buttons.css') }}">
+@section('title', 'Formulário de Credenciamento')
 
-</head>
-<body>
+@section('content')
 
     <form class="form-container" action="#" method="POST">
 
@@ -73,5 +65,4 @@
 
     </form>
 
-</body>
-</html>
+@endsection
