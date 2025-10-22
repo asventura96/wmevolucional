@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Candidate;
+use App\Models\CandidateContact;
 use App\Models\MaritalStatus;
 use App\Models\Profession;
 use App\Models\Religion;
@@ -10,6 +11,7 @@ use App\Models\State;
 use App\Models\StateCity;
 use App\Models\ZodiacSign;
 
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -50,9 +52,9 @@ class CandidateRegistrationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // 1. VALIDAÇÃO COMPLETA:
+        // 1. VALIDAÇÃO COMPLETA (SEM SENHA, COM CONTATOS)
         $validatedData = $request->validate([
-            // Dados Pessoais
+            // Dados Pessoais (candidates)
             'name' => 'required|string|max:255',
             'cpf' => 'required|string|max:14|unique:candidates,cpf',
             'birth_date' => 'required|date',
@@ -60,14 +62,10 @@ class CandidateRegistrationController extends Controller
             'religion_id' => 'nullable|integer|exists:religions,id',
             'marital_status_id' => 'nullable|integer|exists:marital_statuses,id',
             'birthplace_id' => 'nullable|integer|exists:state_cities,id',
-
-            // Filiação
             'mother_name' => 'nullable|string|max:255',
             'mother_profession_id' => 'nullable|integer|exists:professions,id',
             'father_name' => 'nullable|string|max:255',
             'father_profession_id' => 'nullable|integer|exists:professions,id',
-
-            // Família
             'has_siblings' => 'required|boolean',
             'siblings_count' => 'nullable|integer|min:0',
             'has_children' => 'required|boolean',
@@ -75,12 +73,14 @@ class CandidateRegistrationController extends Controller
             'children_age' => 'nullable|string|max:255',
             'spouse_name' => 'nullable|string|max:255',
             'spouse_profession_id' => 'nullable|integer|exists:professions,id',
-
-            // Outros
             'notes' => 'nullable|string',
 
-            // LGPD (Vamos adicionar um checkbox para isso depois)
-            // 'data_consentimento_lgpd' => 'required' 
+            // Dados de Contato (candidate_contacts)
+            'email' => 'nullable|email|max:255',
+            'mobile' => 'nullable|string|max:15',
+            'is_whatsapp' => 'nullable|boolean',
+            'instagram' => 'nullable|string|max:255',
+            'linkedin' => 'nullable|string|max:255',
         ]);
 
         // 2. PREPARAR OS DADOS
@@ -88,10 +88,40 @@ class CandidateRegistrationController extends Controller
         // Adicionar o timestamp da LGPD (provisório)
         $validatedData['data_consentimento_lgpd'] = now();
 
-        // 3. CRIAÇÃO:
-        Candidate::create($validatedData);
+        // Garantir que o 'is_whatsapp' seja 0 se não for marcado
+        $validatedData['is_whatsapp'] = $request->has('is_whatsapp') ? 1 : 0;
 
-        // 4. REDIRECIONAMENTO:
+        // 3. SEPARAR OS DADOS PARA CADA TABELA
+        // (O Arr::only pega apenas os campos que pertencem a cada tabela)
+
+        // Pega só os dados do Model 'Candidate'
+        $candidateData = Arr::only($validatedData, [
+            'name', 'cpf', 'birth_date', 'zodiac_sign_id', 'religion_id', 
+            'marital_status_id', 'birthplace_id', 'mother_name', 
+            'mother_profession_id', 'father_name', 'father_profession_id', 
+            'has_siblings', 'siblings_count', 'has_children', 'children_count', 
+            'children_age', 'spouse_name', 'spouse_profession_id', 'notes',
+            'data_consentimento_lgpd' 
+            // Note que 'email_principal' e 'senha_hash' não estão mais aqui
+        ]);
+
+        // Pega só os dados do Model 'CandidateContact'
+        $contactData = Arr::only($validatedData, [
+            'email', 'mobile', 'is_whatsapp', 'instagram', 'linkedin'
+        ]);
+
+        // 4. SALVAR
+
+        // Primeiro, cria o candidato principal
+        $candidate = Candidate::create($candidateData);
+
+        // Agora, adiciona o ID do candidato aos dados de contato
+        $contactData['candidate_id'] = $candidate->id;
+
+        // E cria o registro de contato
+        CandidateContact::create($contactData);
+
+        // 5. REDIRECIONAMENTO:
         return redirect()->route('candidate.register.create')
                         ->with('success', 'Cadastro realizado com sucesso!');
     }

@@ -151,6 +151,31 @@
             <textarea class="form-control" id="notes" name="notes" rows="4"></textarea>
         </div>
 
+        <h2>Contatos</h2>
+        <div class="form-group">
+            <label class="form-label" for="email">E-mail Pessoal:</label>
+            <input class="form-control" type="email" id="email" name="email">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="mobile">Celular:</label>
+            <input class="form-control" type="text" id="mobile" name="mobile">
+        </div>
+
+        <div class="form-group">
+            <input type="checkbox" id="is_whatsapp" name="is_whatsapp" value="1"> 
+            <label for="is_whatsapp">Este número é WhatsApp</label>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="instagram">Instagram:</label>
+            <input class="form-control" type="text" id="instagram" name="instagram" placeholder="@seu.usuario">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="linkedin">LinkedIn:</label>
+            <input class="form-control" type="text" id="linkedin" name="linkedin" placeholder="linkedin.com/in/seu-usuario">
+        </div>
         <hr>
 
         <div class="form-group">
