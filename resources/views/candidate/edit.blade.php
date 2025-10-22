@@ -26,7 +26,7 @@
                 </ul>
             </div>
         @endif
-        
+
         <p>Atualize suas informações abaixo.</p>
 
         <h2>Dados Pessoais</h2>
@@ -49,8 +49,60 @@
             <input class="form-control" type="date" id="birth_date" name="birth_date" value="{{ old('birth_date', $candidate->birth_date?->format('Y-m-d')) }}" required>
         </div>
 
-        {{-- TODO: Adicionar os outros campos (Signo, Religião, etc.) com os valores preenchidos --}}
-        {{-- TODO: Adicionar os campos de Contato, Documento, Endereço com os valores preenchidos --}}
+        {{-- Campos Dropdown - Dados Pessoais --}}
+        <div class="form-group">
+            <label class="form-label" for="zodiac_sign_id">Signo:</label>
+            <select class="form-control" id="zodiac_sign_id" name="zodiac_sign_id" required>
+                <option value="">Selecione...</option>
+                {{-- Loop para preencher as opções --}}
+                @foreach($zodiacSigns as $sign)
+                    <option value="{{ $sign->id }}" 
+                            {{-- A MÁGICA: Marca como 'selected' se for o valor atual do candidato --}}
+                            @if(old('zodiac_sign_id', $candidate->zodiac_sign_id) == $sign->id) selected @endif>
+                        {{ $sign->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="religion_id">Religião:</label>
+            <select class="form-control" id="religion_id" name="religion_id">
+                <option value="">Selecione...</option>
+                @foreach($religions as $religion)
+                    <option value="{{ $religion->id }}" 
+                            @if(old('religion_id', $candidate->religion_id) == $religion->id) selected @endif>
+                        {{ $religion->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="marital_status_id">Estado Civil:</label>
+            <select class="form-control" id="marital_status_id" name="marital_status_id">
+                <option value="">Selecione...</option>
+                @foreach($maritalStatuses as $status)
+                    <option value="{{ $status->id }}" 
+                            @if(old('marital_status_id', $candidate->marital_status_id) == $status->id) selected @endif>
+                        {{ $status->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="birthplace_id">Naturalidade (Cidade / Estado):</label>
+            <select class="form-control" id="birthplace_id" name="birthplace_id">
+                <option value="">Selecione...</option>
+                @foreach($cities as $city)
+                    <option value="{{ $city->id }}" 
+                            @if(old('birthplace_id', $candidate->birthplace_id) == $city->id) selected @endif>
+                        {{ $city->name }} {{-- TODO: Adicionar o Estado aqui --}}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
         <hr>
 

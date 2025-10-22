@@ -228,7 +228,10 @@ class CandidateRegistrationController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'birth_date' => 'required|date',
-            // TODO: Adicionar validação para TODOS os outros campos
+            'zodiac_sign_id' => 'required|integer|exists:zodiac_signs,id',
+            'religion_id' => 'nullable|integer|exists:religions,id',
+            'marital_status_id' => 'nullable|integer|exists:marital_statuses,id',
+            'birthplace_id' => 'nullable|integer|exists:state_cities,id',
         ]);
 
         // 2. ATUALIZAÇÃO:
