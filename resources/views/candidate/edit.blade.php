@@ -248,6 +248,47 @@
             <input class="form-control" type="date" id="id_issue_date" name="id_issue_date" value="{{ old('id_issue_date', $candidate->document?->id_issue_date?->format('Y-m-d')) }}">
         </div>
 
+        <h2>Endereço</h2>
+        <div class="form-group">
+            <label class="form-label" for="address">Endereço (Rua, Av., etc.):</label>
+            {{-- Usamos o '?->' para evitar erro se não houver endereço --}}
+            <input class="form-control" type="text" id="address" name="address" value="{{ old('address', $candidate->address?->address) }}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="number">Número:</label>
+            <input class="form-control" type="text" id="number" name="number" value="{{ old('number', $candidate->address?->number) }}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="complement">Complemento (Apto, Bloco, etc.):</label>
+            <input class="form-control" type="text" id="complement" name="complement" value="{{ old('complement', $candidate->address?->complement) }}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="neighborhood">Bairro:</label>
+            <input class="form-control" type="text" id="neighborhood" name="neighborhood" value="{{ old('neighborhood', $candidate->address?->neighborhood) }}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="zip_code">CEP:</label>
+            <input class="form-control" type="text" id="zip_code" name="zip_code" value="{{ old('zip_code', $candidate->address?->zip_code) }}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="city_id">Cidade:</label>
+            <select class="form-control" id="city_id" name="city_id">
+                <option value="">Selecione a Cidade...</option>
+                {{-- Reutiliza a variável $cities --}}
+                @foreach($cities as $city)
+                    <option value="{{ $city->id }}" 
+                            @if(old('city_id', $candidate->address?->city_id) == $city->id) selected @endif>
+                        {{ $city->name }} {{-- TODO: Adicionar o Estado aqui --}}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
         <hr>
 
         <div class="form-group">

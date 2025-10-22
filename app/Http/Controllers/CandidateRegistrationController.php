@@ -253,6 +253,12 @@ class CandidateRegistrationController extends Controller
             'id_issuer' => 'nullable|string|max:255',
             'id_issue_state_id' => 'nullable|integer|exists:states,id',
             'id_issue_date' => 'nullable|date',
+            'address' => 'nullable|string|max:255',
+            'number' => 'nullable|string|max:255',
+            'complement' => 'nullable|string|max:255',
+            'neighborhood' => 'nullable|string|max:255',
+            'zip_code' => 'nullable|string|max:8',
+            'city_id' => 'nullable|integer|exists:state_cities,id',
         ]);
 
        // 2. PREPARAR OS DADOS (para o 'is_whatsapp')
@@ -262,32 +268,32 @@ class CandidateRegistrationController extends Controller
 
     $candidateData = Arr::only($validatedData, [ /* ... campos do candidate ... */ ]);
     $contactData = Arr::only($validatedData, [ /* ... campos do contact ... */ ]);
+    $documentData = Arr::only($validatedData, [ /* ... campos do document ... */ ]);
 
-    // NOVO: Pega os dados do Model 'CandidateDocument'
-    $documentData = Arr::only($validatedData, [
-        'id_number', 'id_issuer', 'id_issue_state_id', 'id_issue_date'
+    // NOVO: Pega os dados do Model 'CandidateAddress'
+    $addressData = Arr::only($validatedData, [
+        'address', 'number', 'complement', 'neighborhood', 'zip_code', 'city_id'
     ]);
-
-    // TODO: Separar dados de Endereço
 
     // 4. ATUALIZAÇÃO
 
-    // Atualiza a tabela principal 'candidates'
     $candidate->update($candidateData);
 
-    // Atualiza a tabela relacionada 'candidate_contacts'
     $candidate->contact()->updateOrCreate(
         ['candidate_id' => $candidate->id],
         $contactData
     );
 
-    // NOVO: Atualiza a tabela relacionada 'candidate_documents'
     $candidate->document()->updateOrCreate(
         ['candidate_id' => $candidate->id],
         $documentData
     );
 
-    // TODO: Atualizar Endereço
+    // NOVO: Atualiza a tabela relacionada 'candidate_addresses'
+    $candidate->address()->updateOrCreate(
+        ['candidate_id' => $candidate->id],
+        $addressData
+    );
 
     // 5. REDIRECIONAMENTO:
     return redirect()->route('candidate.edit', ['candidate' => $candidate->id])
