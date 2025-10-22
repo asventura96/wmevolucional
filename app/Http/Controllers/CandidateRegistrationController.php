@@ -10,7 +10,6 @@ use App\Models\State;
 use App\Models\StateCity;
 use App\Models\ZodiacSign;
 
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -62,10 +61,6 @@ class CandidateRegistrationController extends Controller
             'marital_status_id' => 'nullable|integer|exists:marital_statuses,id',
             'birthplace_id' => 'nullable|integer|exists:state_cities,id',
 
-            // Login
-            'email_principal' => 'required|email|max:255|unique:candidates,email_principal',
-            'senha_hash' => 'required|string|min:8|confirmed', // 'confirmed' checa o 'senha_hash_confirmation'
-
             // Filiação
             'mother_name' => 'nullable|string|max:255',
             'mother_profession_id' => 'nullable|integer|exists:professions,id',
@@ -89,9 +84,6 @@ class CandidateRegistrationController extends Controller
         ]);
 
         // 2. PREPARAR OS DADOS
-
-        // Criptografar a senha antes de salvar
-        $validatedData['senha_hash'] = Hash::make($request->senha_hash);
 
         // Adicionar o timestamp da LGPD (provisório)
         $validatedData['data_consentimento_lgpd'] = now();

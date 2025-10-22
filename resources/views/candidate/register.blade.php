@@ -79,20 +79,6 @@
             </select>
         </div>
 
-        <h2>Dados de Login</h2>
-        <div class="form-group">
-            <label class="form-label" for="email_principal">E-mail (Será seu login):</label>
-            <input class="form-control" type="email" id="email_principal" name="email_principal" required>
-        </div>
-        <div class="form-group">
-            <label class="form-label" for="senha_hash">Senha:</label>
-            <input class="form-control" type="password" id="senha_hash" name="senha_hash" required>
-        </div>
-        <div class="form-group">
-            <label class="form-label" for="senha_hash_confirmation">Confirme a Senha:</label>
-            <input class="form-control" type="password" id="senha_hash_confirmation" name="senha_hash_confirmation" required>
-        </div>
-
         <h2>Filiação</h2>
         <div class="form-group">
             <label class="form-label" for="mother_name">Nome da Mãe:</label>
