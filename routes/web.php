@@ -21,3 +21,8 @@ Route::post('/register', [CandidateRegistrationController::class, 'store'])
 Route::get('/candidate/{candidate}/edit', [CandidateRegistrationController::class, 'edit'])
      ->name('candidate.edit'); // Nome da rota para mostrar o form de edição
      // ->middleware('auth'); // TODO: Adicionar segurança depois (login)
+
+// ROTA PARA RECEBER A ATUALIZAÇÃO (UPDATE)
+Route::put('/candidate/{candidate}', [CandidateRegistrationController::class, 'update'])
+     ->name('candidate.update'); // Nome da rota para salvar a edição
+     // ->middleware('auth'); // TODO: Adicionar segurança depois

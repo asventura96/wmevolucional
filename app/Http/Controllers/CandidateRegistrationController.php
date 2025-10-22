@@ -188,26 +188,59 @@ class CandidateRegistrationController extends Controller
         }
     }
 
-    // Adicione o Model Candidate no topo, se já não estiver:
-    // use App\Models\Candidate; 
-
     /**
      * Mostra o formulário para editar um candidato existente.
      */
-    public function edit(Candidate $candidate) // A MÁGICA: O Laravel já busca o candidato pelo ID na URL!
+    public function edit(Candidate $candidate) 
     {
-        // 1. O Laravel já nos deu o $candidate correto.
-        //    Agora, precisamos buscar os dados relacionados (contatos, documentos, endereço)
-        //    e também os dados para os dropdowns (religiões, profissões, etc.)
+        // 1. Carrega os dados relacionados junto com o candidato
+        //    (Assumindo relacionamentos One-to-One chamados 'contact', 'document', 'address' no Model Candidate)
+        //    Se os nomes forem diferentes, ajuste aqui.
+        $candidate->loadMissing(['contact', 'document', 'address']); 
 
-        // TODO: Buscar dados relacionados (contatos, documentos, endereço)
-        // TODO: Buscar dados para dropdowns (religiões, profissões, etc.) como fizemos no método create()
+        // 2. Busca os dados para os dropdowns (igual fizemos no método create)
+        $professions = Profession::orderBy('name')->get();
+        $religions = Religion::orderBy('name')->get();
+        $maritalStatuses = MaritalStatus::orderBy('name')->get();
+        $zodiacSigns = ZodiacSign::all();
+        $states = State::orderBy('name')->get();
+        $cities = StateCity::orderBy('name')->get();
 
-        // 2. Carrega a view de edição, passando o candidato encontrado.
-        //    (Vamos criar essa view no próximo passo)
+        // 3. Carrega a view de edição, passando tudo
         return view('candidate.edit', [
             'candidate' => $candidate,
-            // TODO: Passar as outras variáveis (religiões, profissões...) para a view
+            'professions' => $professions,
+            'religions' => $religions,
+            'maritalStatuses' => $maritalStatuses,
+            'zodiacSigns' => $zodiacSigns,
+            'states' => $states,
+            'cities' => $cities,
         ]);
+    }
+
+    /**
+     * Atualiza os dados do candidato no banco de dados.
+     */
+    public function update(Request $request, Candidate $candidate): RedirectResponse
+    {
+        // 1. VALIDAÇÃO (Similar ao 'store', mas ajustada para edição)
+        //    (Vamos adicionar a validação completa depois)
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'birth_date' => 'required|date',
+            // TODO: Adicionar validação para TODOS os outros campos
+        ]);
+
+        // 2. ATUALIZAÇÃO:
+        //    O Laravel já nos deu o $candidate correto.
+        //    O método update() salva apenas os campos validados.
+        $candidate->update($validatedData);
+
+        // TODO: Atualizar os dados relacionados (Contato, Documento, Endereço)
+
+        // 3. REDIRECIONAMENTO:
+        //    Volta para a página de EDIÇÃO com uma mensagem de sucesso
+        return redirect()->route('candidate.edit', ['candidate' => $candidate->id])
+                        ->with('success', 'Cadastro atualizado com sucesso!');
     }
 }

@@ -4,11 +4,29 @@
 
 @section('content')
 
-    <form class="form-container" action="#" method="POST"> {{-- TODO: Apontar para a rota de Update --}}
+    <form class="form-container" action="{{ route('candidate.update', ['candidate' => $candidate->id]) }}" method="POST">
         @csrf
         @method('PUT') {{-- Informa ao Laravel que é uma atualização --}}
 
         <h1>Editar Cadastro</h1>
+
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <strong>Opa!</strong> Algo deu errado:
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        
         <p>Atualize suas informações abaixo.</p>
 
         <h2>Dados Pessoais</h2>
