@@ -104,6 +104,42 @@
             </select>
         </div>
 
+        <h2>Filiação</h2>
+        <div class="form-group">
+            <label class="form-label" for="mother_name">Nome da Mãe:</label>
+            <input class="form-control" type="text" id="mother_name" name="mother_name" value="{{ old('mother_name', $candidate->mother_name) }}">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="mother_profession_id">Profissão da Mãe:</label>
+            <select class="form-control" id="mother_profession_id" name="mother_profession_id">
+                <option value="">Selecione...</option>
+                {{-- Reutiliza a variável $professions --}}
+                @foreach($professions as $profession)
+                    <option value="{{ $profession->id }}" 
+                            @if(old('mother_profession_id', $candidate->mother_profession_id) == $profession->id) selected @endif>
+                        {{ $profession->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="father_name">Nome do Pai:</label>
+            <input class="form-control" type="text" id="father_name" name="father_name" value="{{ old('father_name', $candidate->father_name) }}">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="father_profession_id">Profissão do Pai:</label>
+            <select class="form-control" id="father_profession_id" name="father_profession_id">
+                <option value="">Selecione...</option>
+                {{-- Reutiliza a variável $professions --}}
+                @foreach($professions as $profession)
+                    <option value="{{ $profession->id }}" 
+                            @if(old('father_profession_id', $candidate->father_profession_id) == $profession->id) selected @endif>
+                        {{ $profession->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
         <hr>
 
         <div class="form-group">

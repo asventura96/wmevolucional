@@ -232,6 +232,10 @@ class CandidateRegistrationController extends Controller
             'religion_id' => 'nullable|integer|exists:religions,id',
             'marital_status_id' => 'nullable|integer|exists:marital_statuses,id',
             'birthplace_id' => 'nullable|integer|exists:state_cities,id',
+            'mother_name' => 'nullable|string|max:255',
+            'mother_profession_id' => 'nullable|integer|exists:professions,id',
+            'father_name' => 'nullable|string|max:255',
+            'father_profession_id' => 'nullable|integer|exists:professions,id',
         ]);
 
         // 2. ATUALIZAÇÃO:
