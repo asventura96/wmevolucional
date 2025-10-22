@@ -149,4 +149,44 @@ class CandidateRegistrationController extends Controller
         return redirect()->route('candidate.register.create')
                         ->with('success', 'Cadastro realizado com sucesso!');
     }
+
+    /**
+     * Mostra o formulário de verificação de CPF / Data Nasc.
+     */
+    public function showCheckForm()
+    {
+        // Carrega a view 'resources/views/candidate/check.blade.php'
+        return view('candidate.check');
+    }
+
+    /**
+     * Verifica se um candidato com o CPF e Data de Nascimento já existe.
+     */
+    public function checkCandidate(Request $request): RedirectResponse
+    {
+        // 1. Valida os dados que vieram do formulário de verificação
+        $validated = $request->validate([
+            'cpf' => 'required|string|max:14', // Max 14 para incluir máscara se houver
+            'birth_date' => 'required|date',
+        ]);
+
+        // 2. Tenta encontrar o candidato no banco de dados
+        $candidate = Candidate::where('cpf', $validated['cpf'])
+                            ->where('birth_date', $validated['birth_date'])
+                            ->first(); // Pega o primeiro resultado (ou null se não achar)
+
+        // 3. Decide para onde redirecionar
+        if ($candidate) {
+            // -- CANDIDATO ENCONTRADO --
+            // TODO: Redirecionar para a página de "Visualizar/Editar Dados"
+            // Por enquanto, vamos redirecionar de volta com uma mensagem de erro temporária.
+            return redirect()->route('candidate.check.form')
+                            ->with('error', 'Cadastro já existente. (Página de edição ainda não implementada)');
+
+        } else {
+            // -- CANDIDATO NÃO ENCONTRADO --
+            // Redireciona para a página do formulário de cadastro (/register)
+            return redirect()->route('candidate.register.create');
+        }
+    }
 }

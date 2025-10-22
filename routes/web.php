@@ -3,21 +3,16 @@
 use App\Http\Controllers\CandidateRegistrationController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Rotas Web
-|--------------------------------------------------------------------------
-|
-| Esta é a rota principal que o candidato verá.
-| Vamos fazer a home (/) já ser o formulário de cadastro.
-|
-*/
+// ROTA PRINCIPAL: Mostra a tela de verificação (CPF + Data Nasc)
+Route::get('/', [CandidateRegistrationController::class, 'showCheckForm'])
+     ->name('candidate.check.form'); // Nome da rota para mostrar o form
 
-// 2. Aponta o endereço "/" para o método "create" dentro do "cérebro"
-Route::get('/', [CandidateRegistrationController::class, 'create'])
-     ->name('candidate.register.create'); // Dá um nome para esta rota
+// ROTA PARA RECEBER A VERIFICAÇÃO (Vamos criar o método checkCandidate daqui a pouco)
+Route::post('/check', [CandidateRegistrationController::class, 'checkCandidate'])
+     ->name('candidate.check'); 
 
-     // Ela RECEBE os dados do formulário
-Route::post('/', [CandidateRegistrationController::class, 'store'])
+// ROTAS DO FORMULÁRIO DE CADASTRO (Agora em /register)
+Route::get('/register', [CandidateRegistrationController::class, 'create'])
+     ->name('candidate.register.create'); 
+Route::post('/register', [CandidateRegistrationController::class, 'store'])
      ->name('candidate.register.store');
-
