@@ -202,6 +202,42 @@
             <label class="form-label" for="id_issue_date">Data de Emissão:</label>
             <input class="form-control" type="date" id="id_issue_date" name="id_issue_date">
         </div>
+
+        <h2>Endereço</h2>
+        <div class="form-group">
+            <label class="form-label" for="address">Endereço (Rua, Av., etc.):</label>
+            <input class="form-control" type="text" id="address" name="address">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="number">Número:</label>
+            <input class="form-control" type="text" id="number" name="number">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="complement">Complemento (Apto, Bloco, etc.):</label>
+            <input class="form-control" type="text" id="complement" name="complement">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="neighborhood">Bairro:</label>
+            <input class="form-control" type="text" id="neighborhood" name="neighborhood">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="zip_code">CEP:</label>
+            <input class="form-control" type="text" id="zip_code" name="zip_code">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="city_id">Cidade:</label>
+            <select class="form-control" id="city_id" name="city_id">
+                <option value="">Selecione a Cidade...</option>
+                @foreach($cities as $city)
+                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                @endforeach
+            </select>
+        </div>
         <hr>
 
         <div class="form-group">

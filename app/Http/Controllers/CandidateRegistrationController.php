@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Candidate;
+use App\Models\CandidateAddress;
 use App\Models\CandidateContact;
 use App\Models\CandidateDocument;
 use App\Models\MaritalStatus;
@@ -53,7 +54,7 @@ class CandidateRegistrationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // 1. VALIDAÇÃO COMPLETA (COM DOCUMENTOS)
+        // 1. VALIDAÇÃO COMPLETA (COM ENDEREÇO)
         $validatedData = $request->validate([
             // Dados Pessoais (candidates)
             'name' => 'required|string|max:255',
@@ -88,6 +89,14 @@ class CandidateRegistrationController extends Controller
             'id_issuer' => 'nullable|string|max:255',
             'id_issue_state_id' => 'nullable|integer|exists:states,id',
             'id_issue_date' => 'nullable|date',
+
+            // Dados de Endereço (candidate_address)
+            'address' => 'nullable|string|max:255',
+            'number' => 'nullable|string|max:255',
+            'complement' => 'nullable|string|max:255',
+            'neighborhood' => 'nullable|string|max:255',
+            'zip_code' => 'nullable|string|max:8',
+            'city_id' => 'nullable|integer|exists:state_cities,id',
         ]);
 
         // 2. PREPARAR OS DADOS
@@ -110,22 +119,28 @@ class CandidateRegistrationController extends Controller
             'email', 'mobile', 'is_whatsapp', 'instagram', 'linkedin'
         ]);
 
-        // NOVO: Pega os dados do Model 'CandidateDocument'
         $documentData = Arr::only($validatedData, [
             'id_number', 'id_issuer', 'id_issue_state_id', 'id_issue_date'
+        ]);
+
+        // NOVO: Pega os dados do Model 'CandidateAddress'
+        $addressData = Arr::only($validatedData, [
+            'address', 'number', 'complement', 'neighborhood', 'zip_code', 'city_id'
         ]);
 
         // 4. SALVAR
 
         $candidate = Candidate::create($candidateData);
 
-        // Adiciona o ID do candidato aos dados de contato e documento
+        // Adiciona o ID do candidato aos dados relacionados
         $contactData['candidate_id'] = $candidate->id;
         $documentData['candidate_id'] = $candidate->id;
+        $addressData['candidate_id'] = $candidate->id;
 
         // Cria os registros
         CandidateContact::create($contactData);
-        CandidateDocument::create($documentData); // <-- NOVO
+        CandidateDocument::create($documentData);
+        CandidateAddress::create($addressData); // <-- NOVO
 
         // 5. REDIRECIONAMENTO:
         return redirect()->route('candidate.register.create')
