@@ -244,18 +244,53 @@ class CandidateRegistrationController extends Controller
             'spouse_name' => 'nullable|string|max:255',
             'spouse_profession_id' => 'nullable|integer|exists:professions,id',
             'notes' => 'nullable|string',
+            'email' => 'nullable|email|max:255',
+            'mobile' => 'nullable|string|max:15',
+            'is_whatsapp' => 'nullable|boolean', // Vem como '1' ou não vem (null)
+            'instagram' => 'nullable|string|max:255',
+            'linkedin' => 'nullable|string|max:255',
         ]);
 
-        // 2. ATUALIZAÇÃO:
-        //    O Laravel já nos deu o $candidate correto.
-        //    O método update() salva apenas os campos validados.
-        $candidate->update($validatedData);
+       // 2. PREPARAR OS DADOS (para o 'is_whatsapp')
+    $validatedData['is_whatsapp'] = $request->has('is_whatsapp') ? 1 : 0;
 
-        // TODO: Atualizar os dados relacionados (Contato, Documento, Endereço)
+    // 3. SEPARAR OS DADOS PARA CADA TABELA
 
-        // 3. REDIRECIONAMENTO:
-        //    Volta para a página de EDIÇÃO com uma mensagem de sucesso
-        return redirect()->route('candidate.edit', ['candidate' => $candidate->id])
-                        ->with('success', 'Cadastro atualizado com sucesso!');
+    // Dados da tabela principal 'candidates'
+    $candidateData = Arr::only($validatedData, [
+        'name', 'birth_date', 'zodiac_sign_id', 'religion_id', 
+        'marital_status_id', 'birthplace_id', 'mother_name', 
+        'mother_profession_id', 'father_name', 'father_profession_id', 
+        'has_siblings', 'siblings_count', 'has_children', 'children_count', 
+        'children_age', 'spouse_name', 'spouse_profession_id', 'notes'
+        // CPF não está aqui porque não pode ser editado
+    ]);
+
+    // Dados da tabela relacionada 'candidate_contacts'
+    $contactData = Arr::only($validatedData, [
+        'email', 'mobile', 'is_whatsapp', 'instagram', 'linkedin'
+    ]);
+
+    // TODO: Separar dados de Documento e Endereço
+
+    // 4. ATUALIZAÇÃO
+
+    // Atualiza a tabela principal 'candidates'
+    $candidate->update($candidateData);
+
+    // Atualiza a tabela relacionada 'candidate_contacts'
+    // O updateOrCreate() é inteligente:
+    // - Se já existe um contato para este $candidate, ele atualiza.
+    // - Se não existe, ele cria um novo.
+    $candidate->contact()->updateOrCreate(
+        ['candidate_id' => $candidate->id], // Condição para encontrar (o ID do candidato)
+        $contactData // Dados para atualizar ou criar
+    );
+
+    // TODO: Atualizar Documento e Endereço
+
+    // 5. REDIRECIONAMENTO:
+    return redirect()->route('candidate.edit', ['candidate' => $candidate->id])
+                     ->with('success', 'Cadastro atualizado com sucesso!');
     }
 }
