@@ -12,6 +12,10 @@ class Candidate extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'birth_date' => 'date',
+    ];
+
     public function zodiacSign(): BelongsTo
     {
         return $this->belongsTo(ZodiacSign::class);

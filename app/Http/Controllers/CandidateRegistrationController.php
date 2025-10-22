@@ -178,15 +178,36 @@ class CandidateRegistrationController extends Controller
         // 3. Decide para onde redirecionar
         if ($candidate) {
             // -- CANDIDATO ENCONTRADO --
-            // TODO: Redirecionar para a página de "Visualizar/Editar Dados"
-            // Por enquanto, vamos redirecionar de volta com uma mensagem de erro temporária.
-            return redirect()->route('candidate.check.form')
-                            ->with('error', 'Cadastro já existente. (Página de edição ainda não implementada)');
+            // Redireciona para a rota de edição, passando o ID do candidato encontrado
+            return redirect()->route('candidate.edit', ['candidate' => $candidate->id]);
 
         } else {
             // -- CANDIDATO NÃO ENCONTRADO --
             // Redireciona para a página do formulário de cadastro (/register)
             return redirect()->route('candidate.register.create');
         }
+    }
+
+    // Adicione o Model Candidate no topo, se já não estiver:
+    // use App\Models\Candidate; 
+
+    /**
+     * Mostra o formulário para editar um candidato existente.
+     */
+    public function edit(Candidate $candidate) // A MÁGICA: O Laravel já busca o candidato pelo ID na URL!
+    {
+        // 1. O Laravel já nos deu o $candidate correto.
+        //    Agora, precisamos buscar os dados relacionados (contatos, documentos, endereço)
+        //    e também os dados para os dropdowns (religiões, profissões, etc.)
+
+        // TODO: Buscar dados relacionados (contatos, documentos, endereço)
+        // TODO: Buscar dados para dropdowns (religiões, profissões, etc.) como fizemos no método create()
+
+        // 2. Carrega a view de edição, passando o candidato encontrado.
+        //    (Vamos criar essa view no próximo passo)
+        return view('candidate.edit', [
+            'candidate' => $candidate,
+            // TODO: Passar as outras variáveis (religiões, profissões...) para a view
+        ]);
     }
 }
