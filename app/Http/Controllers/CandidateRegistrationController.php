@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidate;
 use App\Models\CandidateContact;
+use App\Models\CandidateDocument;
 use App\Models\MaritalStatus;
 use App\Models\Profession;
 use App\Models\Religion;
@@ -52,7 +53,7 @@ class CandidateRegistrationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // 1. VALIDAÇÃO COMPLETA (SEM SENHA, COM CONTATOS)
+        // 1. VALIDAÇÃO COMPLETA (COM DOCUMENTOS)
         $validatedData = $request->validate([
             // Dados Pessoais (candidates)
             'name' => 'required|string|max:255',
@@ -81,20 +82,21 @@ class CandidateRegistrationController extends Controller
             'is_whatsapp' => 'nullable|boolean',
             'instagram' => 'nullable|string|max:255',
             'linkedin' => 'nullable|string|max:255',
+
+            // Dados de Documento (candidate_documents)
+            'id_number' => 'nullable|string|max:255',
+            'id_issuer' => 'nullable|string|max:255',
+            'id_issue_state_id' => 'nullable|integer|exists:states,id',
+            'id_issue_date' => 'nullable|date',
         ]);
 
         // 2. PREPARAR OS DADOS
 
-        // Adicionar o timestamp da LGPD (provisório)
         $validatedData['data_consentimento_lgpd'] = now();
-
-        // Garantir que o 'is_whatsapp' seja 0 se não for marcado
         $validatedData['is_whatsapp'] = $request->has('is_whatsapp') ? 1 : 0;
 
         // 3. SEPARAR OS DADOS PARA CADA TABELA
-        // (O Arr::only pega apenas os campos que pertencem a cada tabela)
 
-        // Pega só os dados do Model 'Candidate'
         $candidateData = Arr::only($validatedData, [
             'name', 'cpf', 'birth_date', 'zodiac_sign_id', 'religion_id', 
             'marital_status_id', 'birthplace_id', 'mother_name', 
@@ -102,24 +104,28 @@ class CandidateRegistrationController extends Controller
             'has_siblings', 'siblings_count', 'has_children', 'children_count', 
             'children_age', 'spouse_name', 'spouse_profession_id', 'notes',
             'data_consentimento_lgpd' 
-            // Note que 'email_principal' e 'senha_hash' não estão mais aqui
         ]);
 
-        // Pega só os dados do Model 'CandidateContact'
         $contactData = Arr::only($validatedData, [
             'email', 'mobile', 'is_whatsapp', 'instagram', 'linkedin'
         ]);
 
+        // NOVO: Pega os dados do Model 'CandidateDocument'
+        $documentData = Arr::only($validatedData, [
+            'id_number', 'id_issuer', 'id_issue_state_id', 'id_issue_date'
+        ]);
+
         // 4. SALVAR
 
-        // Primeiro, cria o candidato principal
         $candidate = Candidate::create($candidateData);
 
-        // Agora, adiciona o ID do candidato aos dados de contato
+        // Adiciona o ID do candidato aos dados de contato e documento
         $contactData['candidate_id'] = $candidate->id;
+        $documentData['candidate_id'] = $candidate->id;
 
-        // E cria o registro de contato
+        // Cria os registros
         CandidateContact::create($contactData);
+        CandidateDocument::create($documentData); // <-- NOVO
 
         // 5. REDIRECIONAMENTO:
         return redirect()->route('candidate.register.create')
