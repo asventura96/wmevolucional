@@ -216,6 +216,38 @@
             <input class="form-control" type="text" id="linkedin" name="linkedin" value="{{ old('linkedin', $candidate->contact?->linkedin) }}" placeholder="linkedin.com/in/seu-usuario">
         </div>
 
+        <h2>Documentos</h2>
+        <div class="form-group">
+            <label class="form-label" for="id_number">Número da Identidade (RG):</label>
+            {{-- Usamos o '?->' (null safe operator) para evitar erro se não houver documento --}}
+            <input class="form-control" type="text" id="id_number" name="id_number" value="{{ old('id_number', $candidate->document?->id_number) }}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="id_issuer">Órgão Emissor:</label>
+            <input class="form-control" type="text" id="id_issuer" name="id_issuer" value="{{ old('id_issuer', $candidate->document?->id_issuer) }}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="id_issue_state_id">Estado Emissor (UF):</label>
+            <select class="form-control" id="id_issue_state_id" name="id_issue_state_id">
+                <option value="">Selecione o Estado...</option>
+                {{-- Reutiliza a variável $states --}}
+                @foreach($states as $state)
+                    <option value="{{ $state->id }}" 
+                            @if(old('id_issue_state_id', $candidate->document?->id_issue_state_id) == $state->id) selected @endif>
+                        {{ $state->name }} ({{ $state->abbreviation }})
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="id_issue_date">Data de Emissão:</label>
+            {{-- Formatamos a data para o campo 'date' --}}
+            <input class="form-control" type="date" id="id_issue_date" name="id_issue_date" value="{{ old('id_issue_date', $candidate->document?->id_issue_date?->format('Y-m-d')) }}">
+        </div>
+
         <hr>
 
         <div class="form-group">

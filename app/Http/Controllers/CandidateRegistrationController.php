@@ -249,6 +249,10 @@ class CandidateRegistrationController extends Controller
             'is_whatsapp' => 'nullable|boolean', // Vem como '1' ou não vem (null)
             'instagram' => 'nullable|string|max:255',
             'linkedin' => 'nullable|string|max:255',
+            'id_number' => 'nullable|string|max:255',
+            'id_issuer' => 'nullable|string|max:255',
+            'id_issue_state_id' => 'nullable|integer|exists:states,id',
+            'id_issue_date' => 'nullable|date',
         ]);
 
        // 2. PREPARAR OS DADOS (para o 'is_whatsapp')
@@ -256,22 +260,15 @@ class CandidateRegistrationController extends Controller
 
     // 3. SEPARAR OS DADOS PARA CADA TABELA
 
-    // Dados da tabela principal 'candidates'
-    $candidateData = Arr::only($validatedData, [
-        'name', 'birth_date', 'zodiac_sign_id', 'religion_id', 
-        'marital_status_id', 'birthplace_id', 'mother_name', 
-        'mother_profession_id', 'father_name', 'father_profession_id', 
-        'has_siblings', 'siblings_count', 'has_children', 'children_count', 
-        'children_age', 'spouse_name', 'spouse_profession_id', 'notes'
-        // CPF não está aqui porque não pode ser editado
+    $candidateData = Arr::only($validatedData, [ /* ... campos do candidate ... */ ]);
+    $contactData = Arr::only($validatedData, [ /* ... campos do contact ... */ ]);
+
+    // NOVO: Pega os dados do Model 'CandidateDocument'
+    $documentData = Arr::only($validatedData, [
+        'id_number', 'id_issuer', 'id_issue_state_id', 'id_issue_date'
     ]);
 
-    // Dados da tabela relacionada 'candidate_contacts'
-    $contactData = Arr::only($validatedData, [
-        'email', 'mobile', 'is_whatsapp', 'instagram', 'linkedin'
-    ]);
-
-    // TODO: Separar dados de Documento e Endereço
+    // TODO: Separar dados de Endereço
 
     // 4. ATUALIZAÇÃO
 
@@ -279,15 +276,18 @@ class CandidateRegistrationController extends Controller
     $candidate->update($candidateData);
 
     // Atualiza a tabela relacionada 'candidate_contacts'
-    // O updateOrCreate() é inteligente:
-    // - Se já existe um contato para este $candidate, ele atualiza.
-    // - Se não existe, ele cria um novo.
     $candidate->contact()->updateOrCreate(
-        ['candidate_id' => $candidate->id], // Condição para encontrar (o ID do candidato)
-        $contactData // Dados para atualizar ou criar
+        ['candidate_id' => $candidate->id],
+        $contactData
     );
 
-    // TODO: Atualizar Documento e Endereço
+    // NOVO: Atualiza a tabela relacionada 'candidate_documents'
+    $candidate->document()->updateOrCreate(
+        ['candidate_id' => $candidate->id],
+        $documentData
+    );
+
+    // TODO: Atualizar Endereço
 
     // 5. REDIRECIONAMENTO:
     return redirect()->route('candidate.edit', ['candidate' => $candidate->id])
