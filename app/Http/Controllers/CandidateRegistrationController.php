@@ -97,6 +97,9 @@ class CandidateRegistrationController extends Controller
             'neighborhood' => 'nullable|string|max:255',
             'zip_code' => 'nullable|string|max:8',
             'city_id' => 'nullable|integer|exists:state_cities,id',
+
+            // Dados LGPD
+            'lgpd_consent' => 'required|accepted',
         ]);
 
         // 2. PREPARAR OS DADOS

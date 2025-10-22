@@ -238,6 +238,16 @@
                 @endforeach
             </select>
         </div>
+
+        <h2>Consentimento LGPD</h2>
+        <div class="form-group">
+            <input type="checkbox" id="lgpd_consent" name="lgpd_consent" value="1" required>
+            <label for="lgpd_consent">
+                Declaro que as informações fornecidas são verdadeiras e de minha inteira responsabilidade. 
+                Estou ciente de que os dados informados serão utilizados exclusivamente para fins de credenciamento junto à WM Evolucional e às empresas parceiras para as quais forem necessários, em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 - LGPD). 
+                Autorizo o tratamento dos meus dados pessoais para as finalidades mencionadas, estando ciente de que poderei solicitar informações, correções ou a revogação deste consentimento a qualquer momento, nos termos da legislação vigente.
+            </label>
+        </div>
         <hr>
 
         <div class="form-group">
