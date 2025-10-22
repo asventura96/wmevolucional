@@ -140,6 +140,55 @@
             </select>
         </div>
 
+        <h2>Família</h2>
+        <div class="form-group">
+            <label class="form-label">Irmãos?</label>
+            {{-- Usamos @checked para marcar o radio button correto --}}
+            <input type="radio" id="has_siblings_no" name="has_siblings" value="0" @checked(old('has_siblings', $candidate->has_siblings) == 0)> <label for="has_siblings_no">Não</label>
+            <input type="radio" id="has_siblings_yes" name="has_siblings" value="1" @checked(old('has_siblings', $candidate->has_siblings) == 1)> <label for="has_siblings_yes">Sim</label>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="siblings_count">Quantos?</label>
+            <input class="form-control" type="number" id="siblings_count" name="siblings_count" value="{{ old('siblings_count', $candidate->siblings_count) }}" min="0">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Filhos?</label>
+            <input type="radio" id="has_children_no" name="has_children" value="0" @checked(old('has_children', $candidate->has_children) == 0)> <label for="has_children_no">Não</label>
+            <input type="radio" id="has_children_yes" name="has_children" value="1" @checked(old('has_children', $candidate->has_children) == 1)> <label for="has_children_yes">Sim</label>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="children_count">Quantos?</label>
+            <input class="form-control" type="number" id="children_count" name="children_count" value="{{ old('children_count', $candidate->children_count) }}" min="0">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="children_age">Idades?</label>
+            <input class="form-control" type="text" id="children_age" name="children_age" value="{{ old('children_age', $candidate->children_age) }}" placeholder="Ex: 3, 5 e 7">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="spouse_name">Nome do(a) Cônjuge:</label>
+            <input class="form-control" type="text" id="spouse_name" name="spouse_name" value="{{ old('spouse_name', $candidate->spouse_name) }}">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="spouse_profession_id">Profissão do(a) Cônjuge:</label>
+            <select class="form-control" id="spouse_profession_id" name="spouse_profession_id">
+                <option value="">Selecione...</option>
+                {{-- Reutiliza a variável $professions --}}
+                @foreach($professions as $profession)
+                    <option value="{{ $profession->id }}" 
+                            @if(old('spouse_profession_id', $candidate->spouse_profession_id) == $profession->id) selected @endif>
+                        {{ $profession->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="notes">Observações:</label>
+            <textarea class="form-control" id="notes" name="notes" rows="4">{{ old('notes', $candidate->notes) }}</textarea> {{-- Para textarea, o valor vai dentro da tag --}}
+        </div>
+
         <hr>
 
         <div class="form-group">

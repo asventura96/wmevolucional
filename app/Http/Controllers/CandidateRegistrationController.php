@@ -236,6 +236,14 @@ class CandidateRegistrationController extends Controller
             'mother_profession_id' => 'nullable|integer|exists:professions,id',
             'father_name' => 'nullable|string|max:255',
             'father_profession_id' => 'nullable|integer|exists:professions,id',
+            'has_siblings' => 'required|boolean',
+            'siblings_count' => 'nullable|integer|min:0',
+            'has_children' => 'required|boolean',
+            'children_count' => 'nullable|integer|min:0',
+            'children_age' => 'nullable|string|max:255',
+            'spouse_name' => 'nullable|string|max:255',
+            'spouse_profession_id' => 'nullable|integer|exists:professions,id',
+            'notes' => 'nullable|string',
         ]);
 
         // 2. ATUALIZAÇÃO:
